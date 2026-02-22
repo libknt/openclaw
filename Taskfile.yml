@@ -1,0 +1,39 @@
+version: "3"
+
+tasks:
+  default:
+    desc: 利用可能なタスク一覧を表示
+    cmds:
+      - task --list
+    silent: true
+
+  dev:up:
+    desc: devcontainer をビルドして起動
+    cmds:
+      - devcontainer up --workspace-folder .
+
+  dev:connect:
+    desc: このワークスペースの devcontainer に zsh で接続
+    cmds:
+      - |
+        RUNNING_ID="$(docker ps -q \
+          --filter "label=devcontainer.local_folder=$(pwd)" \
+          --filter "label=devcontainer.config_file=$(pwd)/.devcontainer/devcontainer.json" \
+          | head -n1)"
+
+        if [ -n "$RUNNING_ID" ]; then
+          exec docker exec -it "$RUNNING_ID" zsh
+        fi
+
+        CREATED_ID="$(docker ps -aq \
+          --filter "label=devcontainer.local_folder=$(pwd)" \
+          --filter "label=devcontainer.config_file=$(pwd)/.devcontainer/devcontainer.json" \
+          | head -n1)"
+
+        if [ -z "$CREATED_ID" ]; then
+          echo "devcontainer が見つかりません。先に 'task dev:up' を実行してください。"
+          exit 1
+        fi
+
+        docker start "$CREATED_ID" >/dev/null
+        exec docker exec -it "$CREATED_ID" zsh

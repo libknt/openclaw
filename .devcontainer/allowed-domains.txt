@@ -1,0 +1,21 @@
+# One domain per line.
+# Lines starting with # are comments.
+#
+# This file is loaded by /usr/local/bin/init-firewall.sh at container start.
+# Add MCP and integration endpoints here as needed.
+
+# GitHub related endpoints commonly used by integrations and OAuth flows
+api.githubcopilot.com
+
+# Linear
+linear.app
+
+# Figma
+host.docker.internal
+
+# Google Fonts (next/font/google)
+fonts.googleapis.com
+fonts.gstatic.com
+
+# shadcn/ui registry
+ui.shadcn.com
